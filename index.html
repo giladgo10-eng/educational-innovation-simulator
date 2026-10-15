@@ -1088,6 +1088,17 @@
               <span><strong>טעינה ושמירה כפרויקט הפעיל</strong> (מחליף ושומר ישירות ב-LocalStorage של הדפדפן)</span>
             </label>
           </div>
+          <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed #cbd5e1; display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem;">
+            <span style="font-weight:600; color:#334155; margin-bottom:0.2rem;">טיפול בשדות ריקים בקובץ:</span>
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+              <input type="radio" name="importEmptyMode" value="preserve" checked>
+              <span><strong>שימור נתונים קיימים (מומלץ)</strong> – שדות שלא מולאו בקובץ ישמרו על ערכיהם הנוכחיים במערכת (ללא דריסה)</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+              <input type="radio" name="importEmptyMode" value="reset">
+              <span><strong>איפוס שדות ריקים</strong> – שדות שלא מולאו בקובץ יאופסו לברירת מחדל ריקה</span>
+            </label>
+          </div>
         </div>
       </div>
 
