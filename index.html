@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סימולטור מרכז חדשנות חינוכי יישובי | כלי תכנון, קבלת החלטות ובקרת משאבים</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- כותרת ראשית וסרגל פעולות עליון -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-icon">🏛️</div>
+        <div class="brand-text">
+          <h1>סימולטור מרכז חדשנות חינוכי יישובי</h1>
+          <p>כלי תכנון מדורג, קבלת החלטות ובקרת משאבים למנהלי חינוך ורשויות מקומיות</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn btn-demo" onclick="loadDemoData()">
+          <span>✨</span> טען רשות הדגמה (נאות שקד)
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveData(true)">
+          <span>💾</span> שמור עבודה
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="printReport()">
+          <span>🖨️</span> הפק דוח מסכם / הדפסה
+        </button>
+        <button type="button" class="btn btn-outline-light btn-sm" onclick="resetToBlank()" title="איפוס לתבנית ריקה">
+          <span>🔄</span> איפוס
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- סרגל שלבים ניווט (Stepper) -->
+  <nav class="stepper-nav-wrapper">
+    <div class="stepper-nav">
+      <div class="step-tab active" data-step="1">
+        <div class="step-badge">1</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">יישוב וחזון</div>
+          <div class="step-tab-subtitle">מאפיינים ועקרונות</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="2">
+        <div class="step-badge">2</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">מיפוי צרכים</div>
+          <div class="step-tab-subtitle">שכונות וחסמים</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="3">
+        <div class="step-badge">3</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">תוכניות קיימות</div>
+          <div class="step-tab-subtitle">משה"ח, אקדמיה, צה"ל</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="4">
+        <div class="step-badge">4</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">פערים וחפיפות</div>
+          <div class="step-tab-subtitle">מניעת הדרה</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="5">
+        <div class="step-badge">5</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">בחירת מודל</div>
+          <div class="step-tab-subtitle">אחוד, שלוחות או רשת</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="6">
+        <div class="step-badge">6</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">פדגוגיה ומרחב</div>
+          <div class="step-tab-subtitle">7 אזורי פעילות</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="7">
+        <div class="step-badge">7</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">היתכנות ותקציב</div>
+          <div class="step-tab-subtitle">CAPEX, OPEX ומימון</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="8">
+        <div class="step-badge">8</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">תוכנית הקמה</div>
+          <div class="step-tab-subtitle">אבני דרך והערכה</div>
+        </div>
+      </div>
+      <div class="step-tab" data-step="summary">
+        <div class="step-badge">★</div>
+        <div class="step-tab-content">
+          <div class="step-tab-title">דוח מנהלים</div>
+          <div class="step-tab-subtitle">סיכום החלטות כולל</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- תוכן ראשי -->
+  <main class="main-content">
+
+    <!-- באנר תרחיש הדגמה -->
+    <div id="demoBanner" class="demo-banner">
+      <strong><span>💡</span> תרחיש הדגמה פעיל: הרשות הדמיונית 'נאות שקד'</strong>
+      <span>כל הנתונים המוצגים מיועדים להמחשה מתודולוגית בלבד, וניתנים לעריכה חופשית או לאיפוס בכל עת.</span>
+    </div>
+
+    <!-- ==========================================
+         שלב 1: הגדרת היישוב והחזון
+         ========================================== -->
+    <section id="stage1" class="stage-panel active">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>🎯</span> שלב 1: הגדרת היישוב, החזון והעקרונות המנחים</h2>
+          <p>הגדרת מאפייני היסוד של הרשות המקומית, תחומי המיקוד שמרכז החדשנות נועד לקדם, והעקרונות המנחים למניעת הדרה.</p>
+        </div>
+        <span class="badge badge-verified">שלב 1 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>מה ידוע ומאומת בשלב זה:</strong>
+          החזון והעקרונות הפדגוגיים מגדירים את זהות המרכז ומנחים את תכנון המרחב הפיזי ותקציב ההקמה.
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>מה חסר / דורש דיוק:</strong>
+          יעדים כמותיים מדויקים של שיעורי השתתפות והגדרת הרצף החינוכי מול מוסדות החינוך הפורמליים.
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>מה דורש אימות רשותי:</strong>
+          תיאום החזון עם ראש הרשות, מנכ"ל העירייה והנהגת ההורים היישובית.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">פרטי הרשות המקומית</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s1_authorityName">
+              שם הרשות המקומית
+              <span class="field-meta-tag badge-self">נתון משתמש</span>
+            </label>
+            <input type="text" id="s1_authorityName" class="form-control" placeholder="לדוגמה: עיריית נאות שקד">
+          </div>
+          <div class="form-group">
+            <label for="s1_cbsCluster">
+              אשכול חברתי-כלכלי (למ"ס)
+              <span class="field-meta-tag badge-verified">למ"ס 2024</span>
+            </label>
+            <select id="s1_cbsCluster" class="form-control">
+              <option value="">בחר אשכול...</option>
+              <option value="1">אשכול 1</option>
+              <option value="2">אשכול 2</option>
+              <option value="3">אשכול 3</option>
+              <option value="4">אשכול 4</option>
+              <option value="5">אשכול 5</option>
+              <option value="6">אשכול 6</option>
+              <option value="7">אשכול 7</option>
+              <option value="8">אשכול 8</option>
+              <option value="9">אשכול 9</option>
+              <option value="10">אשכול 10</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="s1_totalPopulation">סה"כ תושבים ביישוב</label>
+            <input type="text" id="s1_totalPopulation" class="form-control" placeholder="לדוגמה: 48,500">
+          </div>
+          <div class="form-group">
+            <label for="s1_studentCount">מספר תלמידים כולל (א'-י"ב)</label>
+            <input type="text" id="s1_studentCount" class="form-control" placeholder="לדוגמה: 9,800">
+          </div>
+          <div class="form-group">
+            <label for="s1_geographicArea">מרחב גאוגרפי ומאפיינים מיוחדים</label>
+            <input type="text" id="s1_geographicArea" class="form-control" placeholder="לדוגמה: פריפריה צפונית, רשות מעורבת">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">חזון המרכז, מטרות ותוצאות רצויות</div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="s1_visionStatement">
+            הצהרת החזון של מרכז החדשנות
+            <span class="field-meta-tag badge-self">הצהרת מדיניות</span>
+          </label>
+          <textarea id="s1_visionStatement" class="form-control" placeholder="מה המרכז אמור לקדם ביישוב?"></textarea>
+          <span class="form-text">החזון צריך לחבר בין טיפוח סקרנות, חקר, יצירה ופתרון בעיות אמיתיות של הקהילה.</span>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="s1_desiredOutcomes">תוצאות רצויות ויעדים מרכזיים</label>
+          <textarea id="s1_desiredOutcomes" class="form-control" placeholder="אילו שינויים מדידים ייראו במערכת החינוך היישובית בעקבות פעילות המרכז?"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="s1_notes">דגשים והערות תכנון</label>
+          <textarea id="s1_notes" class="form-control" style="min-height:60px;"></textarea>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 2: מיפוי צרכים ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 2: מיפוי צרכים ואוכלוסיות
+         ========================================== -->
+    <section id="stage2" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>🗺️</span> שלב 2: מיפוי צרכים, אוכלוסיות והזדמנויות</h2>
+          <p>מיפוי שכונות הרשות, בתי הספר, פלחי הגיל, וזיהוי חסמי נגישות, שפה, תחבורה ותשתיות.</p>
+        </div>
+        <span class="badge badge-verified">שלב 2 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>מה ידוע מתוך נתוני הרשות:</strong>
+          פריסת מוסדות החינוך ומספרי התלמידים לפי שכונות (נתוני מנב"ס/שפ"ח).
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>מה חסר / מסומן כהערכה:</strong>
+          שיעור המחשוב והרשת הביתית בשכונות מוחלשות (דורש סקר צרכים ממוקד).
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>מה דורש אימות מול מחלקת תחבורה:</strong>
+          זמינות קווי תחבורה ציבורית או צורך בהקצאת מערך הסעות ייעודי למרכז.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <div class="form-section-title" style="margin-bottom:0; border-bottom:none;">שכונות, אזורים ונגישות גאוגרפית</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addNewNeighborhoodPrompt()">➕ הוסף שכונה</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>שם השכונה / אזור</th>
+                <th>בתי ספר בשכונה</th>
+                <th>תלמידים משוערים</th>
+                <th>מדד חברתי-כלכלי</th>
+                <th>חסמי נגישות ותחבורה</th>
+              </tr>
+            </thead>
+            <tbody id="s2_neighborhoodsTableBody">
+              <!-- נטען דינמית -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">אוכלוסיות יעד, צרכים וחוזקות יישוביות</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s2_targetPopulations">
+              אוכלוסיות יעד וקבוצות גיל
+              <span class="field-meta-tag badge-self">הגדרת רשות</span>
+            </label>
+            <textarea id="s2_targetPopulations" class="form-control" placeholder="אילו קהלים וקבוצות גיל המרכז ישרת?"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s2_identifiedNeeds">
+              צרכים חינוכיים שעלו במיפוי
+              <span class="field-meta-tag badge-self">מיפוי צרכים</span>
+            </label>
+            <textarea id="s2_identifiedNeeds" class="form-control" placeholder="מעבדות פתוחות, מרחבי מייקרס, חקר"></textarea>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="s2_strengths">חוזקות ועוגנים קיימים ברשות</label>
+            <textarea id="s2_strengths" class="form-control" placeholder="צוותים מחויבים, מכללה טכנולוגית, תעשייה"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">זיהוי חסמים קריטיים (Barriers Analysis)</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s2_barrier_transport">
+              חסם תחבורה וניידות
+              <span class="field-meta-tag badge-estimate">הערכה לתכנון</span>
+            </label>
+            <textarea id="s2_barrier_transport" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s2_barrier_socio">
+              חסם כלכלי ודמי השתתפות
+              <span class="field-meta-tag badge-estimate">הערכה לתכנון</span>
+            </label>
+            <textarea id="s2_barrier_socio" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s2_barrier_lang">
+              חסם שפתי ותרבותי
+              <span class="field-meta-tag badge-self">מיפוי רשותי</span>
+            </label>
+            <textarea id="s2_barrier_lang" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s2_barrier_infra">
+              חסמי תשתית ומעבדות קיימות
+              <span class="field-meta-tag badge-verified">דוח הנדסה</span>
+            </label>
+            <textarea id="s2_barrier_infra" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">פרטי מקורות המידע ותיעוד נתונים חסרים</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s2_dataSources">מקורות המידע ששימשו למיפוי</label>
+            <input type="text" id="s2_dataSources" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="s2_updateDate">תאריך עדכון אחרון של הנתונים</label>
+            <input type="date" id="s2_updateDate" class="form-control">
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="s2_missingDataNotes">הערות לגבי נתונים חסרים / טעוני אימות</label>
+            <textarea id="s2_missingDataNotes" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 1</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 3: תוכניות קיימות ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 3: מיפוי תוכניות ומענים קיימים
+         ========================================== -->
+    <section id="stage3" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>📋</span> שלב 3: מיפוי תוכניות ומענים קיימים ברשות</h2>
+          <p>מיפוי תוכניות של משרד החינוך, הרשות, אקדמיה, צה"ל, עמותות ופילנתרופיה, כולל תנאי כניסה וסיווג מהימנות.</p>
+        </div>
+        <span class="badge badge-verified">שלב 3 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>מקורות מאומתים:</strong>
+          מרכזי מחוננים של משרד החינוך, תוכניות גפ"ן מוסדיות, תוכניות מגשימים ואקדמיה.
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>תוכניות שאינן ברשת:</strong>
+          יוזמות מקומיות של בתי ספר ועמותות שכונתיות קטנות (מוגדרות לפי דיווח עצמי).
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>אימות מחירים ומלגות:</strong>
+          בדיקת חוזרי מנכ"ל לגבי תשלומי הורים מותרים ומבחני הכנסה למלגות.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <div class="form-section-title" style="margin-bottom:0; border-bottom:none;">קטלוג תוכניות ומסגרות פעילות</div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="addNewProgramPrompt()">➕ הוסף תוכנית</button>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>שם התוכנית</th>
+                <th>גוף מפעיל</th>
+                <th>תחום</th>
+                <th>שכבות גיל</th>
+                <th>משתתפים</th>
+                <th>עלות להורים</th>
+                <th>סיווג אמינות וסטטוס</th>
+              </tr>
+            </thead>
+            <tbody id="s3_programsTableBody">
+              <!-- נטען דינמית -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 2</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 4: זיהוי פערים ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 4: זיהוי פערים וחפיפות
+         ========================================== -->
+    <section id="stage4" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>⚖️</span> שלב 4: ניתוח פערים, כפילויות ושיתופי פעולה</h2>
+          <p>הצלבת הצרכים מול התוכניות הקיימות: אילו תחומים ואוכלוסיות נותרים ללא מענה, ואיפה קיימת כפילות משאבים.</p>
+        </div>
+        <span class="badge badge-verified">שלב 4 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>העיקרון האתי המחייב:</strong>
+          המערכת אינה מסיקה סיבתיות לגבי הישגים, ואינה מציגה פער כעובדה אם הנתונים חלקיים.
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>פער נתונים מול פער שירות:</strong>
+          היעדר תלמידים משכונה מסוימת אינו מעיד על חוסר עניין, אלא על חסמי תחבורה ועלות.
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>דוח מבקר המדינה 2023:</strong>
+          בדיקת מנגנוני התיאום העירוניים למניעת כפילויות בתקציבי תוכניות מצוינות.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">ניתוח פערים ואוכלוסיות ללא מענה</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s4_unaddressedNeeds">
+              צרכים חינוכיים ללא מענה כיום
+              <span class="field-meta-tag badge-estimate">ניתוח פערים</span>
+            </label>
+            <textarea id="s4_unaddressedNeeds" class="form-control" style="min-height:95px;"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s4_underservedPopulations">
+              אוכלוסיות יעד ושכונות בחסר (Under-represented)
+              <span class="field-meta-tag badge-verified">הצלבת רישום</span>
+            </label>
+            <textarea id="s4_underservedPopulations" class="form-control" style="min-height:95px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">כפילויות והזדמנויות לשותפות</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s4_programOverlaps">
+              חפיפות וכפילויות בין תוכניות קיימות
+              <span class="field-meta-tag badge-self">מיפוי רשותי</span>
+            </label>
+            <textarea id="s4_programOverlaps" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s4_partnershipOpportunities">
+              הזדמנויות לשותפויות (אקדמיה, תעשייה, צה"ל)
+              <span class="field-meta-tag badge-estimate">הזדמנות אסטרטגית</span>
+            </label>
+            <textarea id="s4_partnershipOpportunities" class="form-control"></textarea>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="s4_notes">הערות מתודולוגיות ואזהרות אמינות</label>
+            <textarea id="s4_notes" class="form-control" style="min-height:60px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 3</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 5: בחירת מודל ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 5: בחירת מודל מרכז ופורטפוליו
+         ========================================== -->
+    <section id="stage5" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>🧩</span> שלב 5: בחירת מודל מרכז ופורטפוליו חינוכי</h2>
+          <p>השוואת 4 מודלים תפעוליים והשלכותיהם על נגישות, הכללה חברתית, כוח אדם, גמישות שטח ועלויות.</p>
+        </div>
+        <span class="badge badge-verified">שלב 5 מתוך 8</span>
+      </div>
+
+      <div class="selection-cards" style="margin-bottom:1.5rem;">
+        <div class="select-card model-select-card" data-model-type="centralized">
+          <div class="select-card-header">
+            <span class="select-card-title">1. מרכז פיזי אחוד</span>
+            <span class="badge badge-self">Centralized Hub</span>
+          </div>
+          <div class="select-card-desc">
+            מבנה מרכזי יחיד ביישוב המרכז את כל הציוד המתקדם, המעבדות ואנשי המקצוע.
+          </div>
+          <div class="select-card-impacts">
+            • <strong>נגישות:</strong> תלויה בהסעות<br>
+            • <strong>הצטיידות:</strong> יעילות גבוהה בריכוז ציוד<br>
+            • <strong>כוח אדם:</strong> ניהול מרוכז וצוות קבוע
+          </div>
+        </div>
+
+        <div class="select-card model-select-card" data-model-type="hub_and_spoke">
+          <div class="select-card-header">
+            <span class="select-card-title">2. שלוחות בבתי ספר</span>
+            <span class="badge badge-verified">Hub & Spoke</span>
+          </div>
+          <div class="select-card-desc">
+            עוגן מרכזי מצויד היטב במרכז העיר, לצד 2-3 שלוחות מקומיות בבתי ספר בשכונות מרוחקות.
+          </div>
+          <div class="select-card-impacts">
+            • <strong>נגישות:</strong> מצוינת, מנטרלת חסם הסעות<br>
+            • <strong>הצטיידות:</strong> שילוב בין ציוד מרכזי לערכות ניידות<br>
+            • <strong>הכללה:</strong> הגבוהה ביותר לשכונות מוחלשות
+          </div>
+        </div>
+
+        <div class="select-card model-select-card" data-model-type="mobile">
+          <div class="select-card-header">
+            <span class="select-card-title">3. מודל נייד (Mobile Lab)</span>
+            <span class="badge badge-estimate">ניידת מייקרס</span>
+          </div>
+          <div class="select-card-desc">
+            מעבדה ניידת ברכב ייעודי הנודדת בין בתי ספר ומרכזים קהילתיים לפי תוכנית שבועית.
+          </div>
+          <div class="select-card-impacts">
+            • <strong>שטח קבוע:</strong> עלות שטח אפסית<br>
+            • <strong>ציוד:</strong> מוגבל לממדי הרכב<br>
+            • <strong>תחזוקה:</strong> עלויות רכב ודלק
+          </div>
+        </div>
+
+        <div class="select-card model-select-card" data-model-type="ecosystem_network">
+          <div class="select-card-header">
+            <span class="select-card-title">4. רשת שותפים מבוזרת</span>
+            <span class="badge badge-self">Ecosystem Network</span>
+          </div>
+          <div class="select-card-desc">
+            הפעלת פעילויות מבוזרות במתקני המכללה האקדמית, חברות הייטק, מרכזים קהילתיים ומוזיאונים.
+          </div>
+          <div class="select-card-impacts">
+            • <strong>מבנה:</strong> ניצול תשתיות קיימות<br>
+            • <strong>משילות:</strong> תיאום מורכב בין שותפים<br>
+            • <strong>המשכיות:</strong> תלות בהסכמי שותפות
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">מדיניות איתור, קבלה ופתיחות לקהילה</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s5_admissionPolicy">
+              מדיניות איתור וקבלה
+              <span class="field-meta-tag badge-verified">מחקר רפ 2026</span>
+            </label>
+            <select id="s5_admissionPolicy" class="form-control">
+              <option value="mixed_portfolios">שערי כניסה מרובים (תיק עבודות, המלצת מורה, מוטיבציה)</option>
+              <option value="teacher_recommendation">המלצת צוותי בתי הספר בלבד</option>
+              <option value="open_lottery">כניסה פתוחה / הגרלה לכלל המעוניינים</option>
+              <option value="exams_only">מבחן איתור קוגניטיבי מוקדם בלבד (לא מומלץ)</option>
+            </select>
+            <span class="form-text">מחקר מאל"ו ולמ"ס 2026 מראה כי מבחן יחיד מחמיץ חלק ניכר מהמצטיינים בבגרות.</span>
+          </div>
+          <div class="form-group">
+            <label for="s5_estimatedParticipants">מספר משתתפים צפוי בשנה</label>
+            <input type="number" id="s5_estimatedParticipants" class="form-control" value="650">
+          </div>
+          <div class="form-group">
+            <label for="s5_activityFrequency">מתכונת פעילות שבועית</label>
+            <select id="s5_activityFrequency" class="form-control">
+              <option value="afternoon_and_morning">משולב: שעות בוקר לבתי ספר + שעות אחה"צ להעשרה אישית</option>
+              <option value="afternoon_only">שעות אחה"צ בלבד (חוגים ומיזמים עצמאיים)</option>
+              <option value="morning_only">שעות הבוקר בלבד (ימי שליפה מרוכזים)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="s5_communityOpenness">פתיחות לקהילה ולהורים</label>
+            <select id="s5_communityOpenness" class="form-control">
+              <option value="high">גבוהה: סדנאות הורים-ילדים, אירועי מייקרס וימי פתיחה לקהילה</option>
+              <option value="medium">בינונית: אירועי שיא שנתיים וירידי יזמות</option>
+              <option value="low">נמוכה: סגור לתלמידי התוכניות בלבד</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="s5_modelRationale">נימוק לבחירת המודל והשלכותיו</label>
+            <textarea id="s5_modelRationale" class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 4</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 6: פדגוגיה ומרחב ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 6: תכנון פדגוגי, ארגוני ומרחבי
+         ========================================== -->
+    <section id="stage6" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>🏛️</span> שלב 6: תכנון פדגוגי, ארגוני ומרחבי</h2>
+          <p>תכנון 7 אזורי הפעילות המרחביים לפי מאמר "מהרעיון למרחב" ועקרונות OECD ILE. המרחב משרת את הפדגוגיה!</p>
+        </div>
+        <span class="badge badge-verified">שלב 6 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>עקרון יסוד תכנוני:</strong>
+          אין מתחילים מרכישת ציוד או ריהוט – העיצוב המרחבי נגזר מהתפיסה הפדגוגית ומרווחת הלומד (Wellbeing).
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>מרחבים גמישים (OECD):</strong>
+          שילוב של מרחבי התכנסות, מעבדות חקר, סדנאות ייצור, מרחבים שקטים ומפגש חברתי בלתי פורמלי.
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>בדיקת שטח כולל:</strong>
+          סה"כ שטח מתוכנן נטו: <strong id="s6_totalAreaDisplay" style="color:var(--primary);">0 מ"ר</strong>.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">שבעת אזורי הפעילות המרחביים</div>
+        <div id="s6_spacesContainer">
+          <!-- נטען דינמית -->
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">ממשל, הובלה וצוות המרכז</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s6_governanceStructure">
+              מבנה ממשל והובלה עירונית
+              <span class="field-meta-tag badge-verified">דוח מבקר 2023</span>
+            </label>
+            <textarea id="s6_governanceStructure" class="form-control" placeholder="ועדת היגוי, נציג גזברות, פיקוח משרד החינוך"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s6_keyPartners">שותפים אסטרטגיים</label>
+            <textarea id="s6_keyPartners" class="form-control" placeholder="מכללה, תעשייה, קרנות, צה\"ל"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s6_staffingRoles">תפקידי צוות וכוח אדם</label>
+            <textarea id="s6_staffingRoles" class="form-control" placeholder="מנהל מרכז, מדריכים, תמיכה טכנית"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s6_pedagogicalConcept">תפיסה פדגוגית מובילה</label>
+            <textarea id="s6_pedagogicalConcept" class="form-control" placeholder="למידה מבוססת פרויקטים, אתגרים עירוניים, STEM"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 5</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 7: היתכנות ותקציב ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 7: היתכנות, תקציב ומשאבים
+         ========================================== -->
+    <section id="stage7" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>💰</span> שלב 7: היתכנות תקציבית ומשאבים (CAPEX & OPEX)</h2>
+          <p>הפרדה מלאה בין הקמה חד-פעמית לתפעול שוטף, שקיפות נוסחאות והנחות, וניתוח סיכוני הפסקת מימון.</p>
+        </div>
+        <span class="badge badge-verified">שלב 7 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-verify">
+          <strong>סטטוס אומדן תקציבי:</strong>
+          כל הסכומים מוגדרים כ-<strong>"הערכה לתכנון — טעונה בדיקה בגזברות"</strong>. אין אומדן כהוצאה מאושרת.
+        </div>
+        <div class="meta-card meta-card-known">
+          <strong>סה"כ עלות הקמה משוערת (CAPEX):</strong>
+          <span id="s7_capexTotalDisplay" style="font-size:1.15rem; font-weight:800; color:var(--primary);">0 ₪</span>
+        </div>
+        <div class="meta-card meta-card-known">
+          <strong>סה"כ תפעול שנתי משוער (OPEX):</strong>
+          <span id="s7_opexTotalDisplay" style="font-size:1.15rem; font-weight:800; color:var(--secondary);">0 ₪</span>
+        </div>
+      </div>
+
+      <!-- CAPEX -->
+      <div class="form-section">
+        <div class="form-section-title">
+          <span>עלויות הקמה חד-פעמיות (CAPEX)</span>
+          <span class="badge badge-estimate">תקציב פיתוח (תב"ר)</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s7_renovationCost">
+              עלות שיפוץ והתאמת מבנה (₪ למ"ר)
+              <span class="field-meta-tag badge-estimate">Benchmark 2,400 ₪</span>
+            </label>
+            <input type="number" id="s7_renovationCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_furnitureCost">ריהוט מודולרי גמיש (₪)</label>
+            <input type="number" id="s7_furnitureCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_equipmentCost">ציוד טכנולוגי ומעבדת מייקרס (₪)</label>
+            <input type="number" id="s7_equipmentCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_networkCost">תשתיות רשת ומערכות שמע/וידאו (₪)</label>
+            <input type="number" id="s7_networkCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_contingencyPercent">בלתי צפוי - בצ"מ (%)</label>
+            <input type="number" id="s7_contingencyPercent" class="form-control" value="10" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+        </div>
+        <div class="formula-box">
+          <strong>נוסחת חישוב הקמה:</strong>
+          <code id="s7_capexFormulaDisplay">...</code>
+          <p>הנחת עבודה: התאמת מבנה ציבורי קיים של הרשות (לא בינוי שלד חדש מהיסוד). טעון אישור מהנדס עיר.</p>
+        </div>
+      </div>
+
+      <!-- OPEX -->
+      <div class="form-section">
+        <div class="form-section-title">
+          <span>עלויות תפעול שנתיות שוטפות (OPEX)</span>
+          <span class="badge badge-estimate">תקציב שוטף (ספר 08)</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s7_managerCost">
+              שכר מנהל/ת מרכז (עלות מעביד שנתית)
+              <span class="field-meta-tag badge-verified">תקן רשותי</span>
+            </label>
+            <input type="number" id="s7_managerCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_instructorPositions">מספר משרות מדריכים</label>
+            <input type="number" id="s7_instructorPositions" class="form-control" step="0.5" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_instructorCostPerPos">עלות מעביד למשרת מדריך (₪ לשנה)</label>
+            <input type="number" id="s7_instructorCostPerPos" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_adminTechCost">רכז אדמיניסטרציה ותמיכה טכנית (₪)</label>
+            <input type="number" id="s7_adminTechCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_maintenanceCost">תחזוקה, חשמל, מים וניקיון (₪)</label>
+            <input type="number" id="s7_maintenanceCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_insuranceCost">ביטוחים ואבטחה מוסדית (₪)</label>
+            <input type="number" id="s7_insuranceCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_consumablesCost">חומרים מתכלים לפעילות (₪)</label>
+            <input type="number" id="s7_consumablesCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_softwareCost">רישוי תוכנה ותחזוקת ציוד (₪)</label>
+            <input type="number" id="s7_softwareCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_scholarshipCost">
+              קרן מלגות והסעות לתלמידים
+              <span class="field-meta-tag badge-verified">מניעת הדרה</span>
+            </label>
+            <input type="number" id="s7_scholarshipCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_marketingCost">אירועי קהילה ושיווק (₪)</label>
+            <input type="number" id="s7_marketingCost" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+        </div>
+        <div class="formula-box">
+          <strong>נוסחת חישוב תפעול שנתי:</strong>
+          <code id="s7_opexFormulaDisplay">...</code>
+        </div>
+      </div>
+
+      <!-- Funding & Risk -->
+      <div class="form-section">
+        <div class="form-section-title">
+          <span>מקורות מימון ואיזון תקציבי</span>
+          <span class="badge badge-verified">הכנסות מול הוצאות</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s7_fundMunicipal">השתתפות עצמית של הרשות (ספר 08)</label>
+            <input type="number" id="s7_fundMunicipal" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_fundMoe">משרד החינוך (גפ"ן רשותי / קול קורא)</label>
+            <input type="number" id="s7_fundMoe" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_fundPhilanthropy">פילנתרופיה, קרנות וחסויות תעשייה</label>
+            <input type="number" id="s7_fundPhilanthropy" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+          <div class="form-group">
+            <label for="s7_fundParentFees">תשלומי הורים מסובסדים (אגרות חוגים)</label>
+            <input type="number" id="s7_fundParentFees" class="form-control" onchange="captureCurrentStepInputs(); updateBudgetAndSpaceCalculations();">
+          </div>
+        </div>
+
+        <div style="margin-top:1.25rem; display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:1rem; border:1px solid #e2e8f0; border-radius:8px;">
+          <div>
+            <strong>מאזן תפעולי חזוי (עודף / גרעון):</strong>
+            <span id="s7_fundingBalanceDisplay" style="font-size:1.2rem; font-weight:800; margin-right:0.5rem;">0 ₪</span>
+          </div>
+          <span class="badge badge-estimate">טעון בדיקת תזרים</span>
+        </div>
+
+        <div id="s7_riskAlertDisplay" class="meta-card meta-card-verify" style="margin-top:1rem;">
+          הערכת סיכוני מימון תחושב אוטומטית...
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label for="s7_fundingRiskAssessment">הערכת סיכונים ואמצעי גידור (תוכנית מגירה להפסקת תרומה)</label>
+          <textarea id="s7_fundingRiskAssessment" class="form-control"></textarea>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 6</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="nextStep()">המשך לשלב 8: תוכנית הקמה ⬅️</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         שלב 8: תוכנית הקמה והערכה
+         ========================================== -->
+    <section id="stage8" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>🚀</span> שלב 8: תוכנית הקמה, אבני דרך ומדדי הערכה</h2>
+          <p>מפת דרכים כרונולוגית (Gantt), אישורים סטטוטוריים מחייבים, ומדדי תהליך ותוצאה להערכה מעצבת.</p>
+        </div>
+        <span class="badge badge-verified">שלב 8 מתוך 8</span>
+      </div>
+
+      <div class="status-meta-grid">
+        <div class="meta-card meta-card-known">
+          <strong>אזהרה מתודולוגית:</strong>
+          אין להציג שביעות רצון או השתתפות כהוכחה להשפעה פדגוגית ארוכת טווח.
+        </div>
+        <div class="meta-card meta-card-verify">
+          <strong>נקודות לבדיקה מקצועית ורגולטורית:</strong>
+          הפעלת המרכז מחייבת בירור מול הגורמים המוסמכים (יועץ בטיחות, מורשה נגישות, כיבוי אש, וייעוד הנכס בהנדסה).
+        </div>
+        <div class="meta-card meta-card-missing">
+          <strong>הערכה מלווה:</strong>
+          חובה לקבוע קו בסיס (Baseline) לפני תחילת הפעילות למדידת התקדמות אמיתית.
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">מפת דרכים להקמה (אבני דרך כרונולוגיות)</div>
+        <div id="s8_milestonesContainer" class="roadmap-timeline">
+          <!-- נטען דינמית -->
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">נקודות לבדיקה מקצועית, בטיחותית ורגולטורית (מול הגורמים המוסמכים)</div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>נושא הבדיקה</th>
+                <th>סטטוס והקשר מקצועי</th>
+                <th>גורם מוסמך לבדיקה</th>
+              </tr>
+            </thead>
+            <tbody id="s8_statutoryTableBody">
+              <!-- נטען דינמית -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">מדדי תהליך, תוצאה והערכה מעצבת</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s8_processIndicators">
+              מדדי תהליך (Process Indicators)
+              <span class="field-meta-tag badge-verified">נגישות וייצוג</span>
+            </label>
+            <textarea id="s8_processIndicators" class="form-control" placeholder="אחוזי ייצוג מכל שכונה, שיעורי התמדה, גיוון מגדרי"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="s8_outcomeIndicators">
+              מדדי תוצאה (Outcome Indicators)
+              <span class="field-meta-tag badge-verified">השפעה והמשכיות</span>
+            </label>
+            <textarea id="s8_outcomeIndicators" class="form-control" placeholder="תוצרי חקר, מיזמים קהילתיים, המשך למגמות מדעיות"></textarea>
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="s8_evaluationMethodology">מתודולוגיית הערכה ומחקר מלווה</label>
+            <textarea id="s8_evaluationMethodology" class="form-control" placeholder="ליווי אקדמי, סקרי עמדות, פורטפוליו תוצרים וקבוצות מיקוד"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 7</button>
+          <button type="button" class="btn btn-secondary" onclick="saveData(true)">💾 שמור טיוטה</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="goToSummary()">עבור לדוח מנהלים מסכם ★</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         תצוגת סיכום מנהלים אינטגרטיבי (Report)
+         ========================================== -->
+    <section id="stageSummary" class="stage-panel">
+      <div class="stage-header">
+        <div class="stage-title-wrap">
+          <h2><span>📑</span> תזכיר מנהלים מסכם – תכנון והקמת מרכז חדשנות יישובי</h2>
+          <p>דוח אינטגרטיבי המרכז את כל ההחלטות, הפערים, המודל, הפרוגרמה המרחבית, התקציב ומפת הדרכים.</p>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לעריכה</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ הדפס / שמור כ-PDF</button>
+        </div>
+      </div>
+
+      <div id="executiveSummaryContent">
+        <!-- נטען דינמית על ידי app.js -->
+      </div>
+
+      <div class="stage-footer">
+        <div class="stage-footer-right">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">➡️ חזור לשלב 8</button>
+        </div>
+        <div class="stage-footer-left">
+          <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ הדפס דוח מסכם</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/simulator_data.js"></script>
+  <script src="js/calculations.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

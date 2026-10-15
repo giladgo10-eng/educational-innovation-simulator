@@ -1,0 +1,25 @@
+# קובצי בדיקות מקומיים (אינם מיועדים לפרסום או למאגר)
+test_runner.html
+
+# קובצי סביבה, מפתחות וסודות
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.secret
+*.token
+
+# קובצי מערכת ועורכים
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# קובצי לוג וזמניים
+*.tmp
+*.log
+*.bak
