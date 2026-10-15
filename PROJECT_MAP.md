@@ -6,6 +6,10 @@
 ## 1. זהות הפרויקט ומטרתו
 * **שם המערכת:** סימולטור תכנון והקמה של מרכז חדשנות חינוכי יישובי (Municipal Educational Innovation Center Simulator).
 * **סביבת הפרויקט:** מאגר מקומי ייעודי / סביבת עבודה עצמאית (Educational Innovation Simulator Repository)
+* **עצמאות הפרויקט:** המאגר והאתר עצמאיים לחלוטין ונפרדים מכל פרויקט אחר (לרבות סימולטור התקציב המוניציפלי).
+* **מאגר GitHub רשמי:** [https://github.com/giladgo10-eng/educational-innovation-simulator](https://github.com/giladgo10-eng/educational-innovation-simulator)
+* **אתר אינטראקטיבי פעיל (GitHub Pages):** [https://giladgo10-eng.github.io/educational-innovation-simulator/](https://giladgo10-eng.github.io/educational-innovation-simulator/)
+* **תהליך עדכון קבוע:** שינוי בתיקייה המקומית $\rightarrow$ בדיקה ואימות $\rightarrow$ Commit $\rightarrow$ דחיפה (Push) לענף `main` במאגר הייעודי $\rightarrow$ המתנה לפרסום אוטומטי ב-Pages $\rightarrow$ בדיקת הקישור הציבורי.
 * **קהל יעד מוביל:** מנהלי אגפי/מינהלי חינוך ברשויות מקומיות, מנהלי כספים וגזברים, מנהלי מרכזי פסג"ה, צוותי תכנון ואסטרטגיה עירוניים.
 * **ייעוד הכלי:** הפיכת רעיון להקמת מרכז חדשנות לתהליך תכנון יישובי סדור, רב-שלבי ומבוסס נתונים. הכלי מסייע להגדיר חזון, למפות צרכים והזדמנויות, לבחון מענים קיימים, לזהות פערים וחפיפות, לבחור מודל פעולה, לתכנן את הפדגוגיה והמרחב הפיזי, להעריך עלויות ומשאבים (OPEX/CAPEX) ולבנות תוכנית הקמה והערכה מלווה.
 * **עקרון ליבה אתי ומקצועי:** 
