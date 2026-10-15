@@ -22,6 +22,12 @@
         <button type="button" class="btn btn-demo" onclick="loadDemoData()">
           <span>✨</span> טען רשות הדגמה (נאות שקד)
         </button>
+        <button type="button" class="btn btn-outline-light" onclick="openImportModal()" title="ייבוא נתוני תכנון מקובץ חיצוני">
+          <span>📥</span> ייבוא נתונים מקובץ
+        </button>
+        <a href="instructions.html" class="btn btn-outline-light" title="הנחיות שימוש ומדריך למשתמש">
+          <span>📖</span> הנחיות שימוש
+        </a>
         <button type="button" class="btn btn-primary" onclick="saveData(true)">
           <span>💾</span> שמור עבודה
         </button>
@@ -106,6 +112,20 @@
 
   <!-- תוכן ראשי -->
   <main class="main-content">
+
+    <!-- הודעת הבהרה מקצועית בולטת במסך הראשי -->
+    <div class="disclaimer-banner">
+      <div class="disclaimer-body">
+        <span class="disclaimer-icon">⚠️</span>
+        <div class="disclaimer-text">
+          <strong>הבהרה מקצועית ומשפטית:</strong>
+          הסימולטור נועד להתנסות, ללמידה ולהמחשת תרחישים בלבד. הוא אינו כלי מוסמך או בסיס יחיד לקבלת החלטות בפועל. יש לאמת נתונים, הנחות ותוצאות מול מקורות מקצועיים ומוסמכים.
+        </div>
+      </div>
+      <a href="instructions.html" class="btn btn-secondary btn-sm" style="text-decoration:none; white-space:nowrap;">
+        <span>📖</span> הנחיות שימוש מלאות
+      </a>
+    </div>
 
     <!-- באנר תרחיש הדגמה -->
     <div id="demoBanner" class="demo-banner">
@@ -999,8 +1019,90 @@
 
   </main>
 
+  <!-- ==========================================
+       חלונית מודאל: ייבוא נתונים מקובץ
+       ========================================== -->
+  <div id="importModal" class="modal-backdrop" style="display:none;" onclick="if(event.target === this) closeImportModal()">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3><span>📥</span> ייבוא נתונים מקובץ לסימולטור</h3>
+        <button type="button" class="modal-close-btn" onclick="closeImportModal()" title="סגור חלונית">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- 1. הורדת תבניות -->
+        <div class="form-section" style="margin-bottom:0; background:#f8fafc;">
+          <div class="form-section-title" style="font-size:0.95rem; margin-bottom:0.6rem;">
+            <span>1️⃣</span> הורדת תבנית נתונים מותאמת
+          </div>
+          <p style="font-size:0.85rem; color:#475569; margin-bottom:0.75rem; line-height:1.5;">
+            הורידו את תבנית הנתונים המותאמת לסימולטור, מלאו את פרטי הרשות שלכם בתוכנת גיליונות (Excel / Google Sheets) או בעורך טקסט, והעלו את הקובץ לבדיקה:
+          </p>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFile(generateCsvTemplate(), 'תבנית_נתונים_מרכז_חדשנות.csv', 'text/csv;charset=utf-8;')">
+              <span>📊</span> הורד תבנית Excel / CSV (.csv)
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFile(generateJsonTemplate(), 'תבנית_נתונים_מרכז_חדשנות.json', 'application/json;charset=utf-8;')">
+              <span>📄</span> הורד תבנית מובנית JSON (.json)
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. העלאת קובץ -->
+        <div class="form-section" style="margin-bottom:0;">
+          <div class="form-section-title" style="font-size:0.95rem; margin-bottom:0.6rem;">
+            <span>2️⃣</span> בחירת קובץ מהמחשב ובדיקת תקינות
+          </div>
+          <div class="file-dropzone" onclick="document.getElementById('importFileInput').click()">
+            <div style="font-size:1.75rem; margin-bottom:0.35rem;">📂</div>
+            <strong style="color:var(--primary); font-size:0.95rem; display:block;">לחצו לבחירת קובץ CSV או JSON מהמחשב</strong>
+            <span style="font-size:0.8rem; color:#64748b;">הקובץ ייקרא בדפדפן המקומי בלבד ולא יישלח לאף שרת חיצוני</span>
+          </div>
+          <input type="file" id="importFileInput" accept=".csv,.json" style="display:none;" onchange="handleImportFileSelect(event)">
+
+          <!-- תיבות שגיאות / אזהרות -->
+          <div id="importErrorBox" class="meta-card meta-card-missing" style="display:none; margin-top:0.75rem;"></div>
+          <div id="importWarningBox" class="meta-card meta-card-verify" style="display:none; margin-top:0.75rem;"></div>
+        </div>
+
+        <!-- 3. תצוגה מקדימה -->
+        <div id="importPreviewBox" class="form-section" style="display:none; margin-bottom:0; background:var(--primary-subtle); border-color:var(--primary-light);">
+          <div class="form-section-title" style="font-size:0.95rem; margin-bottom:0.6rem; color:var(--primary);">
+            <span>3️⃣</span> תצוגה מקדימה של נתוני הקובץ (Preview)
+          </div>
+          <div id="importPreviewContent"></div>
+        </div>
+
+        <!-- 4. בחירת אופן הטעינה -->
+        <div class="form-section" style="margin-bottom:0; background:#f8fafc;">
+          <div class="form-section-title" style="font-size:0.95rem; margin-bottom:0.6rem;">
+            <span>4️⃣</span> בחירת אופן הטעינה לסימולטור
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.88rem;">
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+              <input type="radio" name="importSaveMode" value="session" checked>
+              <span><strong>טעינה להרצה נוכחית בלבד</strong> (תרחיש בדיקה זמני מבלי לדרוס את השמירה המקומית ב-LocalStorage עד ללחיצה יזומה על 'שמור')</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+              <input type="radio" name="importSaveMode" value="persistent">
+              <span><strong>טעינה ושמירה כפרויקט הפעיל</strong> (מחליף ושומר ישירות ב-LocalStorage של הדפדפן)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeImportModal()">ביטול</button>
+        <button type="button" id="importConfirmBtn" class="btn btn-primary" onclick="confirmImport()" disabled>
+          <span>✓</span> אישור וטעינה לסימולטור
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/simulator_data.js"></script>
   <script src="js/calculations.js"></script>
+  <script src="js/file_import.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
