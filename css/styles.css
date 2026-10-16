@@ -806,6 +806,17 @@ textarea.form-control {
     border: 1px solid #ccc;
     padding: 6px;
   }
+
+  .app-footer {
+    display: block !important;
+    background: transparent !important;
+    border-top: 1px solid #cbd5e1 !important;
+    padding: 0.75rem 0 !important;
+    margin-top: 1.5rem !important;
+    font-size: 9pt !important;
+    color: #64748b !important;
+    text-align: center !important;
+  }
 }
 
 /* ==========================================================================
@@ -949,6 +960,44 @@ textarea.form-control {
 .file-dropzone:hover {
   border-color: var(--primary-light);
   background-color: var(--primary-subtle);
+}
+
+/* ==========================================================================
+   כותרת תחתונה ושורת קרדיט (Footer & Credit)
+   ========================================================================== */
+.app-footer {
+  background-color: #ffffff;
+  border-top: 1px solid var(--gray-200);
+  padding: 1.5rem 1rem;
+  margin-top: 2.5rem;
+  text-align: center;
+  direction: rtl;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-credit {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.footer-credit a {
+  color: var(--primary-light);
+  text-decoration: none;
+  font-weight: 500;
+  direction: ltr;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+
+.footer-credit a:hover {
+  text-decoration: underline;
+  color: var(--primary);
 }
 
 
